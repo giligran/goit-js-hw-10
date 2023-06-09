@@ -1,0 +1,11 @@
+.visible {
+  display: block;
+}
+
+.loader {
+  display: none;
+}
+
+.error {
+  display: none;
+}
