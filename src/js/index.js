@@ -1,80 +1,82 @@
 import SlimSelect from 'slim-select';
-import Notiflix from 'notiflix';
+import { Notify } from 'notiflix';
 import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
+
+const breed = new SlimSelect({
+  select: 'select.breed-select',
+  settings: {
+    openPosition: 'auto',
+    placeholderText: 'Choose your breed',
+    searchText: 'Sorry, but we did not find that breed',
+    searchPlaceholder: 'Find the breed you need',
+  },
+  events: {
+    afterChange: onSelect,
+  },
+});
+breed.disable();
+
+function onSelect(val) {
+  const { id, value } = val[0];
+  if (value === 'none') {
+    return;
+  }
+  refs.loader.classList.remove('visually-hidden');
+  fetchCatByBreed(id).then(data => createMarkup(data));
+}
 
 const refs = {
   breedSelect: document.querySelector('select.breed-select'),
   catInfoDiv: document.querySelector('div.cat-info'),
-  loader: document.querySelector('p.loader'),
-  error: document.querySelector('p.error'),
+  loader: document.querySelector('.loader'),
+  error: document.querySelector('.error'),
 };
 
-function populateBreedSelect(breeds) {
-  breeds.forEach(breed => {
-    const option = document.createElement('option');
-    option.value = breed.id;
-    option.textContent = breed.name;
-    refs.breedSelect.appendChild(option);
-  });
-}
+function initSelect() {
+  fetchBreeds()
+    .then(res => {
+      const breedsSelect = res.map(breedEl => {
+        return { id: breedEl.id, text: breedEl.name };
+      });
 
-function displayCatInfo(cat) {
-  refs.catInfoDiv.innerHTML = '';
+      breedsSelect.unshift({
+        placeholder: true,
+        value: 'none',
+        text: 'Choose your breed',
+      });
 
-  const image = document.createElement('img');
-  image.src = cat[0].url;
-  refs.catInfoDiv.appendChild(image);
-
-  const name = document.createElement('p');
-  name.textContent = `Назва породи: ${cat[0].breeds[0].name}`;
-  refs.catInfoDiv.appendChild(name);
-
-  const description = document.createElement('p');
-  description.textContent = `Опис: ${cat[0].breeds[0].description}`;
-  refs.catInfoDiv.appendChild(description);
-
-  const temperament = document.createElement('p');
-  temperament.textContent = `Темперамент: ${cat[0].breeds[0].temperament}`;
-  refs.catInfoDiv.appendChild(temperament);
-}
-
-refs.breedSelect.addEventListener('change', () => {
-  const selectedBreedId = refs.breedSelect.value;
-
-  refs.loader.classList.add('visible');
-
-  refs.catInfoDiv.classList.remove('visible');
-
-  fetchCatByBreed(selectedBreedId)
-    .then(cat => {
-      refs.loader.classList.remove('visible');
-
-      displayCatInfo(cat);
-
-      refs.catInfoDiv.classList.add('visible');
+      breed.setData(breedsSelect);
     })
-    .catch(err => {
-      refs.loader.classList.remove('visible');
-
-      refs.error.classList.add('visible');
+    .catch(error => {
+      console.log(error);
+      onError();
     });
-});
+}
+
+function createMarkup(data) {
+  data = data[0];
+  console.dir(data);
+  refs.catInfoDiv.innerHTML = '';
+  refs.loader.classList.add('visually-hidden');
+  refs.catInfoDiv.innerHTML = `<div class="thumb">
+        <img src=${data.url} alt='${data.breeds[0].name}' />
+      </div><div class='description'><h1 class="breed-name">${data.breeds[0].name}</h1>
+      <p class='description-text'>
+        <span><b>Description: </b>${data.breeds[0].description}</span>
+      </p>
+      <p class='description-temperament'>
+        <span><b>Temperament: </b>${data.breeds[0].temperament}</span
+        >
+      </p></div>`;
+  return;
+}
 
 window.addEventListener('load', () => {
-  refs.loader.classList.add('visible');
-  refs.breedSelect.classList.remove('visible');
-
-  fetchBreeds()
-    .then(breeds => {
-      refs.loader.classList.remove('visible');
-
-      refs.breedSelect.classList.add('visible');
-
-      populateBreedSelect(breeds);
-    })
-    .catch(err => {
-      refs.loader.classList.remove('visible');
-
-      refs.error.classList.add('visible');
-    });
+  initSelect();
+  breed.enable();
+  refs.loader.classList.add('visually-hidden');
 });
+
+function onError() {
+  Notify.failure('Oops! Something went wrong! Try reloading the page!');
+}
