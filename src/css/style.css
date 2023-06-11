@@ -1,11 +1,93 @@
-.visible {
+img {
   display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+  margin: 0;
+  padding-left: 0;
+}
+
+.visually-hidden {
+  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 100%-32px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.cat-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.thumb {
+  max-width: 40%;
+}
+
+.description {
+  max-width: 50%;
+}
+
+.breed-name {
+  margin-bottom: 20px;
+}
+
+.description-text {
+  margin-bottom: 16px;
+}
+
+.breed-select {
+  margin: 15px auto;
+}
+
+/* loader styles */
+span.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px dotted orange;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 2s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loader {
-  display: none;
-}
-
-.error {
-  display: none;
+  margin-top: 30px;
 }

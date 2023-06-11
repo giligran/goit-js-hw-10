@@ -3,21 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homework 10</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
     <link
       href="https://unpkg.com/slim-select@latest/dist/slimselect.css"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="./css/style.css" />
-    <title>Homework 10</title>
   </head>
   <body>
-    <select class="breed-select">
-      <option value="" selected disabled>Оберіть породу</option>
-    </select>
-    <p class="loader">Loading data, please wait...</p>
-    <p class="error">Oops! Something went wrong! Try reloading the page!</p>
-    <div class="cat-info"></div>
+    <main>
+      <div class="container">
+        <select class="breed-select">
+          <option data-placeholder="true"></option>
+        </select>
+
+        <p class="visually-hidden">
+          Oops! Something went wrong! Try reloading the page!
+        </p>
+        <div class="cat-info"></div>
+        <p class="loader">
+          <span class="loader"></span>Loading data, please wait...
+        </p>
+      </div>
+    </main>
     <script src="./js/index.js" type="module"></script>
   </body>
 </html>
